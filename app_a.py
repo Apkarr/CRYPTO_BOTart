@@ -28,6 +28,8 @@ def convert(message: telebot.types.Message):
             raise ConvertionException('Не соответствует трём параметрам.')
         quote, base, amount = values
         total_base = CryptoConverter.convert(quote, base, amount)
+        if amount != 1:
+            raise ConvertionException('Колличество не соответствует единице валюты')
     except ConvertionException as e:
         bot.reply_to(message, f'Ошибка пользователя.\n{e}')
     except Exception as e:
