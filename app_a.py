@@ -7,11 +7,12 @@ bot = telebot.TeleBot(TOKEH)
 
 @bot.message_handler(commands=['start', 'help'])
 def help(message: telebot.types.Message):
-    text = 'Здравствуйте! Я могу дать вам информацию о конвертации некоторых валют.\ '\
-    'Для этого введите комманду в следующем формате:\n<имя валюты> \
+    text = 'Здравствуйте! Я могу дать вам информацию о конвертации некоторых валют.\ ' \
+           'Для этого введите комманду в следующем формате:\n<имя валюты> \
 <в какую валюту перевсти> \
 <единица переводимой валюты> \n <Увидеть список всех доступных валют: /values'
     bot.reply_to(message, text)
+
 
 @bot.message_handler(commands=['values'])
 def values(message: telebot.types.Message):
@@ -19,6 +20,7 @@ def values(message: telebot.types.Message):
     for key in keys.keys():
         text = '\n'.join((text, key,))
     bot.reply_to(message, text)
+
 
 @bot.message_handler(content_types=['text'])
 def convert(message: telebot.types.Message):
@@ -28,8 +30,8 @@ def convert(message: telebot.types.Message):
             raise ConvertionException('Не соответствует трём параметрам.')
         quote, base, amount = values
         total_base = CryptoConverter.convert(quote, base, amount)
-        if amount != 1:
-            raise ConvertionException('Колличество не соответствует единице валюты')
+        if amount != '1':
+            raise ConvertionException('Количество превышает единицу валюты')
     except ConvertionException as e:
         bot.reply_to(message, f'Ошибка пользователя.\n{e}')
     except Exception as e:
@@ -37,5 +39,6 @@ def convert(message: telebot.types.Message):
     else:
         text = f'Цена {amount} {quote} в {base} - {total_base}'
         bot.send_message(message.chat.id, text)
+
 
 bot.polling()
